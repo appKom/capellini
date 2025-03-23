@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "POST") {
       const requestBody: applicantType = req.body;
-      requestBody.date = new Date(new Date().getTime() + 60 * 60 * 2000); // add date with norwegain time (GMT+2)
+      requestBody.date = new Date();
 
       const { period } = await getPeriodById(String(requestBody.periodId));
 
