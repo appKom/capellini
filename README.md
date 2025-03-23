@@ -51,3 +51,20 @@ yarn dev
 ```
 
 Open <http://localhost:3000> with your browser to see the result.
+
+### Running the matching algorithm
+
+Setup Python virtual environment:
+
+```bash
+cd algorithm
+python -m venv ".venv"
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Then, run the file [fetch_applicants_and_committees.py](algorithm/fetch_applicants_and_committees.py):
+
+```bash
+python fetch_applicants_and_committees.py
+```
