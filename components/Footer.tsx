@@ -16,12 +16,12 @@ const footerLinks = [
   {
     name: "Facebook",
     icon: <Facebook />,
-    link: "http://facebook.com/LinjeforeningenOnline",
+    link: "https://facebook.com/LinjeforeningenOnline",
   },
   {
     name: "Instagram",
     icon: <Instagram />,
-    link: "https://www.instagram.com/online_ntnu/",
+    link: "https://instagram.com/online_ntnu/",
   },
   { name: "Github", icon: <Github />, link: "https://github.com/appKom" },
 ];
