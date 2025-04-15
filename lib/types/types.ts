@@ -63,6 +63,7 @@ export type periodType = {
     start: Date;
     end: Date;
   };
+  hideApplicants: boolean;
   committees: string[];
   optionalCommittees: string[];
   hasSentInterviewTimes: boolean;
