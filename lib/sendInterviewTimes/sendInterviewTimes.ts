@@ -53,6 +53,8 @@ export const sendOutInterviewTimes = async ({
 
     await formatAndSendEmails({ committeesToEmail, applicantsToEmail });
     markInterviewsSentByPeriodId(periodId);
+
+    return { success: true };
   } catch (error) {
     return { error: "Failed to send out interview times" };
   }
