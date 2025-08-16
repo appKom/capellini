@@ -36,7 +36,7 @@ export const formatApplicantInterviewEmail = (
     emailBody += `<b>Rom:</b> ${committee.interviewTime.room}</li><br>`;
   });
 
-  emailBody += `</ul> <br/> <br/> <p>Skjedd en feil? Ta kontakt med <a href="mailto:appkom@online.ntnu.no">Appkom</a>❤️</p>`;
+  emailBody += `</ul> <br/> <br/> <p> Fått et tidspunkt som ikke passer? Ta kontakt med komiteen du skal på intervju hos. Skjedd no annet feil feil? Ta kontakt med <a href="mailto:appkom@online.ntnu.no">Appkom</a>❤️</p>`;
 
   return emailBody;
 };
