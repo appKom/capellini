@@ -22,8 +22,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       const result = await sendOutInterviewTimes({ periodId });
-      
-      if (result.error) {
+
+      if ("error" in result) {
         return res.status(500).json({ error: result.error });
       }
 

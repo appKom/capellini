@@ -18,7 +18,7 @@ export const sendOutInterviewTimes = async ({
   periodId,
 }: {
   periodId: string;
-}) => {
+}): Promise<{ success: true } | { error: string }> => {
   try {
     const { period } = await getPeriodById(periodId);
     if (!period) {
