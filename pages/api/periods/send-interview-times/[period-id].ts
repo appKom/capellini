@@ -22,11 +22,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       const result = await sendOutInterviewTimes({ periodId });
-      if (result === undefined) {
-        throw new Error("An error occurred");
+
+      if ("error" in result) {
+        return res.status(500).json({ error: result.error });
       }
-      const { error } = result;
-      if (error) throw new Error(error);
+
       return res.status(201).json({ message: "Period created successfully" });
     }
   } catch {

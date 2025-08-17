@@ -18,7 +18,7 @@ export const sendOutInterviewTimes = async ({
   periodId,
 }: {
   periodId: string;
-}) => {
+}): Promise<{ success: true } | { error: string }> => {
   try {
     const { period } = await getPeriodById(periodId);
     if (!period) {
@@ -53,6 +53,8 @@ export const sendOutInterviewTimes = async ({
 
     await formatAndSendEmails({ committeesToEmail, applicantsToEmail });
     markInterviewsSentByPeriodId(periodId);
+
+    return { success: true };
   } catch (error) {
     return { error: "Failed to send out interview times" };
   }
