@@ -15,6 +15,7 @@ import { fetchOwCommittees } from "../../lib/api/committeesApi";
 import ErrorPage from "../../components/ErrorPage";
 import { createPeriod } from "../../lib/api/periodApi";
 import { SimpleTitle } from "../../components/Typography";
+import Toggle from "../../components/form/Toggle";
 
 const NewPeriod = () => {
   const queryClient = useQueryClient();
@@ -32,6 +33,7 @@ const NewPeriod = () => {
       start: undefined,
       end: undefined,
     },
+    hideApplicants: false,
     committees: [],
     optionalCommittees: [],
     hasSentInterviewTimes: false,
@@ -162,7 +164,16 @@ const NewPeriod = () => {
           label="Intervjuperiode"
           updateDates={updateInterviewPeriodDates}
         />
-
+        <Toggle
+          label="Skjul søkere"
+          info="Søkerne sin informasjon vil holdes skjult for komiteen frem til søkeperioden er over."
+          onToggle={() => {
+            setPeriodData({
+              ...periodData,
+              hideApplicants: !periodData.hideApplicants,
+            })
+          }}
+        />
         {owCommitteeIsLoading ? (
           <div className="animate-pulse">Laster komiteer...</div>
         ) : (
