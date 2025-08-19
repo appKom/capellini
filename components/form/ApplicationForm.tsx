@@ -14,6 +14,7 @@ interface Props {
   setApplicationData: Function;
   availableCommittees: string[];
   optionalCommittees: string[];
+  getCommitteeDisplayName: (committee: string) => string;
 }
 
 export const ApplicationForm = (props: Props) => {
@@ -25,7 +26,10 @@ export const ApplicationForm = (props: Props) => {
 
   props.availableCommittees.forEach((committee) => {
     if (!availableCommittees.some((item) => item[1] === committee)) {
-      availableCommittees.push([committee, committee.toLowerCase()]);
+      availableCommittees.push([
+        props.getCommitteeDisplayName(committee),
+        committee.toLowerCase(),
+      ]);
     }
   });
 

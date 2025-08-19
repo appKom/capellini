@@ -24,6 +24,7 @@ import {
 } from "../../lib/api/applicantApi";
 import ErrorPage from "../../components/ErrorPage";
 import { MainTitle, SimpleTitle } from "../../components/Typography";
+import { getCommitteeDisplayNameFactory } from "../../lib/utils/getCommitteeDisplayNameFactory";
 
 const Application: NextPage = () => {
   const queryClient = useQueryClient();
@@ -31,6 +32,18 @@ const Application: NextPage = () => {
   const router = useRouter();
   const periodId = router.query["period-id"] as string;
   const applicantId = session?.user?.owId;
+
+  const [getCommitteeDisplayName, setGetCommitteeDisplayName] = useState<
+    (committee: string) => string
+    // Uses a wrapper function to not interpret the function as a setStateAction-function
+  >(() => (committee: string) => committee);
+  useEffect(() => {
+    const inner = async () => {
+      const getCommitteeDisplayName = await getCommitteeDisplayNameFactory();
+      setGetCommitteeDisplayName(() => getCommitteeDisplayName);
+    };
+    inner();
+  }, []);
 
   const [activeTab, setActiveTab] = useState(0);
   const [applicationData, setApplicationData] = useState<
@@ -215,6 +228,7 @@ const Application: NextPage = () => {
                     setApplicationData={setApplicationData}
                     availableCommittees={period?.committees || []}
                     optionalCommittees={period?.optionalCommittees || []}
+                    getCommitteeDisplayName={getCommitteeDisplayName}
                   />
                   <div className="flex justify-center w-full">
                     <Button

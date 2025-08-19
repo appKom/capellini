@@ -15,11 +15,24 @@ import { fetchOwCommittees } from "../../lib/api/committeesApi";
 import ErrorPage from "../../components/ErrorPage";
 import { createPeriod } from "../../lib/api/periodApi";
 import { SimpleTitle } from "../../components/Typography";
+import { getCommitteeDisplayNameFactory } from "../../lib/utils/getCommitteeDisplayNameFactory";
 
 const NewPeriod = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const [showPreview, setShowPreview] = useState(false);
+
+  const [getCommitteeDisplayName, setGetCommitteeDisplayName] = useState<
+    (committee: string) => string
+    // Uses a wrapper function to not interpret the function as a setStateAction-function
+  >(() => (committee: string) => committee);
+  useEffect(() => {
+    const inner = async () => {
+      const getCommitteeDisplayName = await getCommitteeDisplayNameFactory();
+      setGetCommitteeDisplayName(() => getCommitteeDisplayName);
+    };
+    inner();
+  }, []);
 
   const [periodData, setPeriodData] = useState<DeepPartial<periodType>>({
     name: "",
@@ -221,6 +234,7 @@ const NewPeriod = () => {
             optionalCommittees={
               (periodData.optionalCommittees?.filter(Boolean) as string[]) || []
             }
+            getCommitteeDisplayName={getCommitteeDisplayName}
           />
         </div>
       )}
