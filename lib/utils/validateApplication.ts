@@ -30,10 +30,10 @@ export const validateApplication = (applicationData: any) => {
   }
 
   // Check if phone number is valid
-  // if (!validator.isMobilePhone(phone, "nb-NO")) {
-  //   toast.error("Fyll inn et gyldig mobilnummer");
-  //   return false;
-  // }
+  if (!validator.isMobilePhone(phone)) {
+    toast.error("Fyll inn et gyldig mobilnummer");
+    return false;
+  }
 
   // Check if grade is valid
   if (grade == 0) {
