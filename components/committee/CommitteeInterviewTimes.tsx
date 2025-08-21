@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { periodType, committeeInterviewType } from "../../lib/types/types";
+import { periodType, committeeInterviewType, AvailableTime } from "../../lib/types/types";
 import toast from "react-hot-toast";
 import NotFound from "../../pages/404";
 import Button from "../Button";
@@ -19,8 +19,8 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 interface Interview {
   id: string;
   title: string;
-  start: string;
-  end: string;
+  start: Date;
+  end: Date;
 }
 
 interface Props {
@@ -98,11 +98,11 @@ const CommitteeInterviewTimes = ({
       if (cleanCommittee === cleanSelectedCommittee) {
         setHasAlreadySubmitted(true);
         const events = committeeInterviewTimes.availabletimes.map(
-          (at: any) => ({
+          (availableTime) => ({
             id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
-            title: at.room,
-            start: new Date(at.start).toISOString(),
-            end: new Date(at.end).toISOString(),
+            title: availableTime.room,
+            start: availableTime.start,
+            end: availableTime.end,
           })
         );
 
@@ -165,8 +165,8 @@ const CommitteeInterviewTimes = ({
     const event: Interview = {
       id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
       title: roomInput,
-      start: currentSelection.start.toISOString(),
-      end: currentSelection.end.toISOString(),
+      start: currentSelection.start,
+      end: currentSelection.end,
     };
 
     const calendarApi = currentSelection.view.calendar;
@@ -180,8 +180,7 @@ const CommitteeInterviewTimes = ({
 
   const submit = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    const formattedEvents = formatEventsForExport(calendarEvents);
-    if (formattedEvents.length === 0) {
+    if (calendarEvents.length === 0) {
       toast.error("Fyll inn minst et gyldig tidspunkt");
       return;
     }
@@ -190,7 +189,7 @@ const CommitteeInterviewTimes = ({
       periodId: period!._id,
       period_name: period!.name,
       committee: committee,
-      availabletimes: formattedEvents,
+      availabletimes: calendarEvents,
       timeslot: `${selectedTimeslot}`,
       message: "",
     };
@@ -208,7 +207,6 @@ const CommitteeInterviewTimes = ({
         throw new Error("Failed to submit data");
       }
 
-      const result = await response.json();
       toast.success("Tidene er sendt inn!");
       setHasAlreadySubmitted(true);
       setUnsavedChanges(false);
@@ -260,18 +258,6 @@ const CommitteeInterviewTimes = ({
         </h1>
       </div>
     );
-  };
-
-  const formatEventsForExport = (events: Interview[]) => {
-    return events.map((event) => {
-      const startDateTime = new Date(event.start);
-      const endDateTime = new Date(event.end);
-      return {
-        room: event.title,
-        start: startDateTime.toISOString(),
-        end: endDateTime.toISOString(),
-      };
-    });
   };
 
   const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -354,8 +340,8 @@ const CommitteeInterviewTimes = ({
 
   const calculateInterviewsPlanned = () => {
     const totalMinutes = calendarEvents.reduce((acc, event) => {
-      const start = new Date(event.start);
-      const end = new Date(event.end);
+      const start = event.start;
+      const end = event.end;
       const duration = (end.getTime() - start.getTime()) / 1000 / 60;
       return acc + duration;
     }, 0);
@@ -474,8 +460,8 @@ const CommitteeInterviewTimes = ({
               hasAlreadySubmitted
                 ? deleteSubmission
                 : (e: BaseSyntheticEvent) => {
-                    submit(e);
-                  }
+                  submit(e);
+                }
             }
             color={hasAlreadySubmitted ? "orange" : "blue"}
           />
