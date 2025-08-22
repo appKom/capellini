@@ -1,3 +1,5 @@
+import { toZonedTime, fromZonedTime } from "date-fns-tz";
+
 export const formatDate = (inputDate: undefined | Date) => {
   const date = new Date(inputDate || "");
 
@@ -14,16 +16,23 @@ export const formatDateHours = (
   start: undefined | string,
   end: undefined | string
 ) => {
-  const startDate = start ? new Date(Date.parse(start)) : undefined;
-  const endDate = end ? new Date(Date.parse(end)) : undefined;
+  if (!start || !end) return "";
+  const timezone = "Europe/Oslo";
 
-  const startHour =
-    startDate?.getUTCHours().toString().padStart(2, "0") || "00";
-  const startMinute =
-    startDate?.getUTCMinutes().toString().padStart(2, "0") || "00";
-  const endHour = endDate?.getUTCHours().toString().padStart(2, "0") || "00";
-  const endMinute =
-    endDate?.getUTCMinutes().toString().padStart(2, "0") || "00";
+  const startDate = new Date(Date.parse(start));
+
+  // Stored times suggest they are UTC (due to +00:00) even though they are actually local
+  // The offset is thus removed, and time is manually converted to UTC and then back to local
+  const cleanStart = start.replace("+00:00", "")
+  const cleanEnd = end.replace("+00:00", "")
+
+  const startUtc = fromZonedTime(cleanStart, timezone);
+  const endUtc = fromZonedTime(cleanEnd, timezone);
+
+  const startHour = toZonedTime(startUtc, timezone).getHours().toString().padStart(2, "0") || "00";
+  const startMinute = toZonedTime(startUtc, timezone).getMinutes().toString().padStart(2, "0") || "00";
+  const endHour = toZonedTime(endUtc, timezone).getHours().toString().padStart(2, "0") || "00";
+  const endMinute = toZonedTime(endUtc, timezone).getMinutes().toString().padStart(2, "0") || "00";
 
   return `${formatDateNorwegian(
     startDate
