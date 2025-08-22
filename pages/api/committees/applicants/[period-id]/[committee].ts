@@ -47,7 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   res.setHeader("Allow", ["GET"]);
-  res.status(405).end(`Method ${req.method} is not allowed.`);
+  return res.status(405).end(`Method ${req.method} is not allowed.`);
 };
 
 export default handler;

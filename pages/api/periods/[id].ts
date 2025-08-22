@@ -29,7 +29,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       return res.status(200).json({ exists, period });
     } else if (req.method === "DELETE") {
-      if (!isAdmin(res, session)) return res.status(403).json({ error: "Unauthorized" });
+      if (!isAdmin(res, session))
+        return res.status(403).json({ error: "Unauthorized" });
 
       const { error } = await deletePeriodById(id);
       if (error) throw new Error(error);
@@ -43,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   res.setHeader("Allow", ["GET", "DELETE"]);
-  res.status(405).end(`Method ${req.method} Not Allowed`);
+  return res.status(405).end(`Method ${req.method} Not Allowed`);
 };
 
 export default handler;
