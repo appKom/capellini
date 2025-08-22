@@ -64,13 +64,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   } catch (error) {
     if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
-    res.status(500).json("An unexpected error occurred");
+    return res.status(500).json("An unexpected error occurred");
   }
 
   res.setHeader("Allow", ["GET", "POST"]);
-  res.status(405).end(`Method ${req.method} is not allowed.`);
+  return res.status(405).end(`Method ${req.method} is not allowed.`);
 };
 
 export default handler;

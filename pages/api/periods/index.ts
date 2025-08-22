@@ -33,11 +33,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(201).json({ message: "Period created successfully" });
     }
   } catch {
-    res.status(500).json("An error occurred");
+    return res.status(500).json("An error occurred");
   }
 
   res.setHeader("Allow", ["GET", "POST"]);
-  res.status(405).end(`Method ${req.method} is not allowed.`);
+  return res.status(405).end(`Method ${req.method} is not allowed.`);
 };
 
 export default handler;
