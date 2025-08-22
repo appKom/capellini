@@ -11,23 +11,17 @@ export const formatDate = (inputDate: undefined | Date) => {
 };
 
 export const formatDateHours = (
-  start: undefined | string,
-  end: undefined | string
+  start: string,
+  end: string
 ) => {
-  const startDate = start ? new Date(Date.parse(start)) : undefined;
-  const endDate = end ? new Date(Date.parse(end)) : undefined;
+  const startDate = new Date(Date.parse(start));
 
-  const startHour =
-    startDate?.getUTCHours().toString().padStart(2, "0") || "00";
-  const startMinute =
-    startDate?.getUTCMinutes().toString().padStart(2, "0") || "00";
-  const endHour = endDate?.getUTCHours().toString().padStart(2, "0") || "00";
-  const endMinute =
-    endDate?.getUTCMinutes().toString().padStart(2, "0") || "00";
+  const startTime = start.split("T")[1].slice(0, 5);
+  const endTime = end.split("T")[1].slice(0, 5);
 
   return `${formatDateNorwegian(
     startDate
-  )}, ${startHour}:${startMinute} til ${endHour}:${endMinute}`;
+  )}, ${startTime} til ${endTime}`;
 };
 
 export const formatDateNorwegian = (inputDate?: Date | string) => {
