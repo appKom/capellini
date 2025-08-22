@@ -11,10 +11,9 @@ export const formatDate = (inputDate: undefined | Date) => {
 };
 
 export const formatDateHours = (
-  start: undefined | string,
-  end: undefined | string
+  start: string,
+  end: string
 ) => {
-  if (!start || !end) return "";
   const startDate = new Date(Date.parse(start));
 
   const startTime = start.split("T")[1].slice(0, 5);
