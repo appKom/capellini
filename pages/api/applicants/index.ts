@@ -62,6 +62,46 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       return res.status(201).json({ applicant });
     }
+
+    if (req.method === "PUT") {
+      const requestBody: applicantType = req.body;
+      requestBody.date = new Date(new Date().getTime() + 60 * 60 * 2000); // add date with norwegain time (GMT+2)
+
+      const { period } = await getPeriodById(String(requestBody.periodId));
+
+      if (!period) {
+        return res.status(400).json({ error: "Invalid period id" });
+      }
+
+      if (!isApplicantType(req.body, period)) {
+        return res.status(400).json({ error: "Invalid data format" });
+      }
+
+      if (!checkOwId(res, session, requestBody.owId)) return;
+
+      const now = new Date();
+      const applicationStart = period.applicationPeriod.start;
+      const applicationEnd = period.applicationPeriod.end;
+
+      // Check if the current time is within the application period
+      if (now < applicationStart || now > applicationEnd) {
+        return res
+          .status(400)
+          .json({ error: "Not within the application period" });
+      }
+
+      const { applicant, error } = await createApplicant(requestBody);
+      if (error) throw new Error(error);
+
+      const mode = process.env.NODE_ENV;
+
+      if (applicant && mode == "production") {
+        await sendConfirmationEmail(applicant);
+        await sendConfirmationSMS(applicant);
+      }
+
+      return res.status(201).json({ applicant });
+    }
   } catch (error) {
     if (error instanceof Error) {
       return res.status(500).json({ error: error.message });
@@ -69,7 +109,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).json("An unexpected error occurred");
   }
 
-  res.setHeader("Allow", ["GET", "POST"]);
+  res.setHeader("Allow", ["GET", "POST", "PUT"]);
   return res.status(405).end(`Method ${req.method} is not allowed.`);
 };
 
