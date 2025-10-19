@@ -84,10 +84,15 @@ export type committeeInterviewType = {
   message: string;
 };
 
-export type owCommitteeType = {
+/**
+ * Type representing a subset of the properties of a committee from the OW API: {BASE_API}/group.all
+ *
+ * TODO: combine with OwGroup from pages/api/auth/[...nextauth].ts
+ */
+export type OwCommittee = {
   name_short: string;
   name_long: string;
-  email?: string;
+  email: string;
   description_long?: string;
   description_short?: string;
   application_description?: string;
