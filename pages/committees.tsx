@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import LoadingPage from "../components/LoadingPage";
-import { owCommitteeType, periodType } from "../lib/types/types";
+import { OwCommittee, periodType } from "../lib/types/types";
 import CommitteeAboutCard from "../components/CommitteeAboutCard";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOwCommittees } from "../lib/api/committeesApi";
@@ -16,7 +16,7 @@ const excludedCommittees = ["Faddere", "Output"];
 
 const otherCommittees = ["Jubkom", "Velkom", "Ekskom", "Debug"];
 
-const hasPeriod = (committee: owCommitteeType, periods: periodType[]) => {
+const hasPeriod = (committee: OwCommittee, periods: periodType[]) => {
   if (!Array.isArray(periods)) return false;
 
   const today = new Date();
@@ -42,7 +42,7 @@ const hasPeriod = (committee: owCommitteeType, periods: periodType[]) => {
   });
 };
 
-const isInterviewing = (committee: owCommitteeType, periods: periodType[]) => {
+const isInterviewing = (committee: OwCommittee, periods: periodType[]) => {
   if (!Array.isArray(periods)) return false;
 
   const today = new Date();
@@ -69,9 +69,11 @@ const isInterviewing = (committee: owCommitteeType, periods: periodType[]) => {
 };
 
 const Committees = () => {
-  const [committees, setCommittees] = useState<owCommitteeType[]>([]);
-  const [nodeCommittees, setNodeCommittees] = useState<owCommitteeType[]>([]);
-  const [committeesWithPeriod, setCommitteesWithPeriod] = useState<owCommitteeType[]>([]);
+  const [committees, setCommittees] = useState<OwCommittee[]>([]);
+  const [nodeCommittees, setNodeCommittees] = useState<OwCommittee[]>([]);
+  const [committeesWithPeriod, setCommitteesWithPeriod] = useState<
+    OwCommittee[]
+  >([]);
   const [periods, setPeriods] = useState<periodType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -97,13 +99,12 @@ const Committees = () => {
     if (!owCommitteeData) return;
 
     const filterNodeCommittees = owCommitteeData.filter(
-      (committee: owCommitteeType) =>
-        otherCommittees.includes(committee.name_short)
+      (committee: OwCommittee) => otherCommittees.includes(committee.name_short)
     );
     setNodeCommittees(shuffleList(filterNodeCommittees));
 
     let filteredCommittees = owCommitteeData.filter(
-      (committee: owCommitteeType) =>
+      (committee: OwCommittee) =>
         !excludedCommittees.includes(committee.name_short) &&
         !otherCommittees.includes(committee.name_short)
     );
@@ -111,7 +112,7 @@ const Committees = () => {
     setCommittees(shuffleList(filteredCommittees));
 
     const filteredCommitteesWithPeriod = owCommitteeData.filter(
-      (commitee: owCommitteeType) =>
+      (commitee: OwCommittee) =>
         (hasPeriod(commitee, periods) || isInterviewing(commitee, periods)) &&
         !excludedCommittees.includes(commitee.name_short)
     );
@@ -119,7 +120,6 @@ const Committees = () => {
     setCommitteesWithPeriod(filteredCommitteesWithPeriod);
 
     if (filteredCommitteesWithPeriod.length > 0) setActiveTab(2);
-
   }, [owCommitteeData, periods]);
 
   useEffect(() => {
@@ -161,17 +161,17 @@ const Committees = () => {
           },
           ...(committeesWithPeriod.length > 0
             ? [
-              {
-                title: "Har opptak",
-                icon: <BellAlertIcon className="w-5 h-5" />,
-                content: (
-                  <CommitteList
-                    committees={committeesWithPeriod}
-                    periods={periods}
-                  />
-                ),
-              },
-            ]
+                {
+                  title: "Har opptak",
+                  icon: <BellAlertIcon className="w-5 h-5" />,
+                  content: (
+                    <CommitteList
+                      committees={committeesWithPeriod}
+                      periods={periods}
+                    />
+                  ),
+                },
+              ]
             : []),
         ]}
       />
@@ -185,7 +185,7 @@ const CommitteList = ({
   committees,
   periods,
 }: {
-  committees: owCommitteeType[];
+  committees: OwCommittee[];
   periods: periodType[];
 }) => (
   <div className="w-10/12 px-4 mx-auto bg-white lg:px-6 dark:bg-gray-900">

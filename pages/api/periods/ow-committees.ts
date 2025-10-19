@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { authOptions, OwGroup } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { hasSession } from "../../../lib/utils/apiChecks";
-import { owCommitteeType } from "../../../lib/types/types";
+import { OwCommittee } from "../../../lib/types/types";
 import SuperJSON from "superjson";
 
 const API_BASE_URL = "https://rpc.online.ntnu.no/api/trpc";
@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const excludedCommitteeNames = ["HS"];
 
     // TODO: Ta med komité-id (finnes det i det hele tatt?)
-    const committees: owCommitteeType[] = committeeData
+    const committees: OwCommittee[] = committeeData
       .filter((group: OwGroup) => group.type == "COMMITTEE")
       .filter(
         (group: OwGroup) => !excludedCommitteeNames.includes(group.name) // Exclude committees by name_short
