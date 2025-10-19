@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authOptions, Group } from "../auth/[...nextauth]";
+import { authOptions, OwGroup } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { hasSession } from "../../../lib/utils/apiChecks";
 import { owCommitteeType } from "../../../lib/types/types";
@@ -29,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       throw new Error("Failed to fetch committees");
     }
 
-    const committeeData: Group[] = SuperJSON.parse(
+    const committeeData: OwGroup[] = SuperJSON.parse(
       JSON.stringify((await committeeResponse.json()).result.data)
     );
 
@@ -37,11 +37,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // TODO: Ta med komité-id (finnes det i det hele tatt?)
     const committees: owCommitteeType[] = committeeData
-      .filter((group: Group) => group.type == "COMMITTEE")
+      .filter((group: OwGroup) => group.type == "COMMITTEE")
       .filter(
-        (group: Group) => !excludedCommitteeNames.includes(group.name) // Exclude committees by name_short
+        (group: OwGroup) => !excludedCommitteeNames.includes(group.name) // Exclude committees by name_short
       )
-      .map((group: Group) => ({
+      .map((group: OwGroup) => ({
         name_short: group.abbreviation,
         name_long: group.name,
         email: group.email,
